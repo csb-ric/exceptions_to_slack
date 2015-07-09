@@ -4,7 +4,7 @@ module ExceptionsToSlack
   class Notifier
     def initialize(app, options = {})
       @app = app
-      @notifier = Slack::Notifier.new(team(options), token(options))
+      @notifier = Slack::Notifier.new(webhook(options))
       @notifier.channel = options[:channel] || raise("Channel is required")
       @notifier.username = options[:user] || "Notifier"
       @ignore = options[:ignore]
@@ -26,6 +26,10 @@ module ExceptionsToSlack
       rescue => slack_exception
         $stderr.puts "\nWARN: Unable to send message to Slack: #{slack_exception}\n"
       end
+    end
+
+    def webhook(options)
+      options[:webhook_url] || raise("Webhook URL is required")
     end
 
     def team(options)
